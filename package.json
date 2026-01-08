@@ -1,0 +1,15 @@
+{
+  "name": "kora-lang",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "private":"true",
+  "directories": {
+    "doc": "docs"
+  },
+  "workspaces":["packages/*"],
+  "scripts": {
+  },
+  "author": "Sudhanshu Choudhary",
+  "license": "ISC"
+}
