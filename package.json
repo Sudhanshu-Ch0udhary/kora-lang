@@ -2,14 +2,18 @@
   "name": "kora-lang",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
-  "private":"true",
+  "private": "true",
   "directories": {
     "doc": "docs"
   },
-  "workspaces":["packages/*"],
-  "scripts": {
-  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
   "author": "Sudhanshu Choudhary",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }
