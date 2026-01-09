@@ -1,6 +1,6 @@
 # Kora
 
-Kora is a sandboxed, deterministic scripting language designed to safely express user-defined logic and rules inside host applications.
+Kora is a small, deterministic scripting language designed for safe embedding inside backend systems and controlled execution environments.
 
 It enables configurable behavior without relying on dynamic code execution, or exposing system resources.
 
