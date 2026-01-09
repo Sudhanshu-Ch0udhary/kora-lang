@@ -1,40 +1,48 @@
-# Kora
+# kora
 
-Kora is a small, deterministic scripting language designed for safe embedding within backend systems and controlled execution environments.
+kora is a small, deterministic scripting language designed for safe embedding within backend systems and controlled execution environments.
 
 ## Overview
 
-kora-lang explores how simple scripting capabilities can be safely introduced into backend systems without sacrificing predictability, isolation, or control.
+The project explores how limited scripting capabilities can be introduced into server-side systems without sacrificing predictability, isolation, or control.
 
-The language prioritizes determinism and restricted execution over expressiveness.
+kora prioritizes determinism and restricted execution over expressiveness.
 
 ## Design Goals
 
 - Deterministic execution
 - Predictable runtime behavior
 - Safe sandboxed execution
-- Minimal surface area for misuse
+- Minimal and explicit language surface
 
 ## Execution Model
 
-- Scripts execute in a constrained runtime
+- Scripts run in a constrained runtime
 - No unrestricted system or network access
 - Clearly defined execution boundaries
-- Designed for embedding rather than standalone usage
+- Designed for embedding, not standalone use
 
 ## Intended Use Cases
 
 - Backend rule engines
 - Controlled automation workflows
-- Embedded logic for orchestration systems
+- Embedded logic in orchestration systems
 - Safe user-defined behavior in server environments
 
 ## Non-Goals
 
 - General-purpose scripting
 - High-performance computation
-- Full OS-level access
+- OS-level access
 
-## Status
+## Example
 
-Experimental and under active iteration.
+```kora
+let score = 42
+
+if score < 50 {
+  emit("needs_review")
+} else {
+  emit("approved")
+}
+```
