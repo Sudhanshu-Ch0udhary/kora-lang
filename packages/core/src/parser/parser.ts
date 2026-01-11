@@ -3,6 +3,10 @@ import { ParseError } from "./parseError";
 
 import { Expression } from "../ast/nodes";
 import { LiteralExpression,IdentifierExpression,BinaryExpression,UnaryExpression,CallExpression } from "../ast/expressions";
+
+import { Statement } from "../ast/nodes";
+import { VariableDeclaration, ExpressionStatement } from "../ast/statements";
+
 export class Parser {
   private tokens: Token[];
   private current = 0;
@@ -11,9 +15,43 @@ export class Parser {
     this.tokens = tokens;
   }
 
-  parseExpression(): Expression {
+  parse(): Statement[] {
+    const statements: Statement[] = [];
+    while (!this.isAtEnd()) {
+      statements.push(this.statement());
+    }
+    return statements;
+  }
+  private parseExpression(): Expression {
     return this.logicalOr();
   }
+
+  private statement(): Statement {
+    if (this.match(TokenType.INT,TokenType.FLOAT,TokenType.STRING,TokenType.BOOL)) {
+      return this.variableDeclaration(this.previous().lexeme);
+    }
+    return this.expressionStatement();
+  }
+
+  private variableDeclaration(typeName: string): Statement {
+    const nameToken = this.consume(TokenType.IDENTIFIER,"Expected variable name after type");
+    this.consume(TokenType.EQUAL,"Expected '=' after variable name");
+    const initializer = this.parseExpression();
+    return {kind: "VariableDeclaration",typeName,name: nameToken.lexeme,initializer,line: nameToken.line,column: nameToken.column} as VariableDeclaration;
+  }
+
+  private expressionStatement(): Statement {
+    const expr = this.parseExpression();
+
+    return {
+      kind: "ExpressionStatement",
+      expression: expr,
+      line: expr.line,
+      column: expr.column
+    } as ExpressionStatement;
+  }
+
+
 
   private logicalOr(): Expression {
     let expr = this.logicalAnd();
@@ -222,7 +260,7 @@ export class Parser {
       column: this.previous().column
     } as CallExpression;
   }
-  
+
   private literal(value: number | string | boolean | null): Expression {
     return {
       kind: "LiteralExpression",
