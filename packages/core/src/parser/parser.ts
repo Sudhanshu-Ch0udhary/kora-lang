@@ -1,6 +1,8 @@
 import { Token, TokenType } from "../lexer/token";
 import { ParseError } from "./parseError";
 
+import { Expression } from "../ast/nodes";
+import { LiteralExpression,IdentifierExpression,BinaryExpression,UnaryExpression,CallExpression } from "../ast/expressions";
 export class Parser {
   private tokens: Token[];
   private current = 0;
@@ -8,11 +10,228 @@ export class Parser {
   constructor(tokens: Token[]) {
     this.tokens = tokens;
   }
-  parse() {
-    // Implementation remaining
-    return [];
+
+  parseExpression(): Expression {
+    return this.logicalOr();
+  }
+
+  private logicalOr(): Expression {
+    let expr = this.logicalAnd();
+    while (this.match(TokenType.OR)) {
+      const operator = this.previous().lexeme;
+      const right = this.logicalAnd();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private logicalAnd(): Expression {
+    let expr = this.equality();
+
+    while (this.match(TokenType.AND)) {
+      const operator = this.previous().lexeme;
+      const right = this.equality();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private equality(): Expression {
+    let expr = this.comparison();
+
+    while (this.match(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL)) {
+      const operator = this.previous().lexeme;
+      const right = this.comparison();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private comparison(): Expression {
+    let expr = this.term();
+
+    while (
+      this.match(
+        TokenType.GREATER,
+        TokenType.GREATER_EQUAL,
+        TokenType.LESS,
+        TokenType.LESS_EQUAL
+      )
+    ) {
+      const operator = this.previous().lexeme;
+      const right = this.term();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private term(): Expression {
+    let expr = this.factor();
+
+    while (this.match(TokenType.PLUS, TokenType.MINUS)) {
+      const operator = this.previous().lexeme;
+      const right = this.factor();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private factor(): Expression {
+    let expr = this.unary();
+
+    while (this.match(TokenType.STAR, TokenType.SLASH)) {
+      const operator = this.previous().lexeme;
+      const right = this.unary();
+
+      expr = {
+        kind: "BinaryExpression",
+        operator,
+        left: expr,
+        right,
+        line: this.previous().line,
+        column: this.previous().column
+      } as BinaryExpression;
+    }
+
+    return expr;
+  }
+
+  private unary(): Expression {
+    if (this.match(TokenType.NOT, TokenType.MINUS)) {
+      const operator = this.previous().lexeme;
+      const operand = this.unary();
+
+      return {
+        kind: "UnaryExpression",
+        operator,
+        operand,
+        line: this.previous().line,
+        column: this.previous().column
+      } as UnaryExpression;
+    }
+
+    return this.primary();
+  }
+
+  private primary(): Expression {
+    if (this.match(TokenType.FALSE)) {
+      return this.literal(false);
+    }
+
+    if (this.match(TokenType.TRUE)) {
+      return this.literal(true);
+    }
+
+    if (this.match(TokenType.NULL)) {
+      return this.literal(null);
+    }
+
+    if (this.match(TokenType.INT_LITERAL, TokenType.FLOAT_LITERAL)) {
+      return this.literal(Number(this.previous().lexeme));
+    }
+
+    if (this.match(TokenType.STRING_LITERAL)) {
+      return this.literal(this.previous().lexeme);
+    }
+
+    if (this.match(TokenType.IDENTIFIER)) {
+      const name = this.previous().lexeme;
+
+      if (this.match(TokenType.LEFT_PAREN)) {
+        return this.finishCall(name);
+      }
+
+      return {
+        kind: "IdentifierExpression",
+        name,
+        line: this.previous().line,
+        column: this.previous().column
+      } as IdentifierExpression;
+    }
+
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const expr = this.parseExpression();
+      this.consume(TokenType.RIGHT_PAREN, "Expected ')' after expression");
+      return expr;
+    }
+
+    throw new ParseError("Expected expression", this.peek());
+  }
+
+  private finishCall(callee: string): Expression {
+    const args: Expression[] = [];
+
+    if (!this.check(TokenType.RIGHT_PAREN)) {
+      do {
+        args.push(this.parseExpression());
+      } while (this.match(TokenType.COMMA));
+    }
+
+    this.consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments");
+
+    return {
+      kind: "CallExpression",
+      callee,
+      arguments: args,
+      line: this.previous().line,
+      column: this.previous().column
+    } as CallExpression;
   }
   
+  private literal(value: number | string | boolean | null): Expression {
+    return {
+      kind: "LiteralExpression",
+      value,
+      line: this.previous().line,
+      column: this.previous().column
+    } as LiteralExpression;
+  }
+
   private match(...types: TokenType[]): boolean {
     for (const type of types) {
       if (this.check(type)) {
