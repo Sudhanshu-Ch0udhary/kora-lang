@@ -7,6 +7,9 @@ import { LiteralExpression,IdentifierExpression,BinaryExpression,UnaryExpression
 import { Statement } from "../ast/nodes";
 import { VariableDeclaration, ExpressionStatement } from "../ast/statements";
 
+import { IfStatement,BlockStatement } from "../ast/statements";
+
+
 export class Parser {
   private tokens: Token[];
   private current = 0;
@@ -27,6 +30,10 @@ export class Parser {
   }
 
   private statement(): Statement {
+    if (this.match(TokenType.IF)) {
+      return this.ifStatement();
+    }
+
     if (this.match(TokenType.INT,TokenType.FLOAT,TokenType.STRING,TokenType.BOOL)) {
       return this.variableDeclaration(this.previous().lexeme);
     }
@@ -50,8 +57,6 @@ export class Parser {
       column: expr.column
     } as ExpressionStatement;
   }
-
-
 
   private logicalOr(): Expression {
     let expr = this.logicalAnd();
@@ -240,6 +245,42 @@ export class Parser {
 
     throw new ParseError("Expected expression", this.peek());
   }
+
+  private ifStatement(): Statement {
+    const condition = this.parseExpression();
+    const thenBranch = this.block();
+    let elseBranch: BlockStatement | undefined;
+    if (this.match(TokenType.ELSE)) {
+      elseBranch = this.block();
+    }
+    return {
+      kind: "IfStatement",
+      condition,
+      thenBranch,
+      elseBranch,
+      line: condition.line,
+      column: condition.column
+    } as IfStatement;
+  }
+
+  private block(): BlockStatement {
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' to start block");
+    const statements: Statement[] = [];
+
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+      statements.push(this.statement());
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' after block");
+
+    return {
+      kind: "BlockStatement",
+      statements,
+      line: this.previous().line,
+      column: this.previous().column
+    } as BlockStatement;
+  }
+
 
   private finishCall(callee: string): Expression {
     const args: Expression[] = [];
