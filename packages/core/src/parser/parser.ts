@@ -9,6 +9,9 @@ import { VariableDeclaration, ExpressionStatement } from "../ast/statements";
 
 import { IfStatement,BlockStatement } from "../ast/statements";
 
+import { WhileStatement } from "../ast/statements";
+
+
 
 export class Parser {
   private tokens: Token[];
@@ -34,9 +37,14 @@ export class Parser {
       return this.ifStatement();
     }
 
-    if (this.match(TokenType.INT,TokenType.FLOAT,TokenType.STRING,TokenType.BOOL)) {
+    if (this.match(TokenType.WHILE)) {
+      return this.whileStatement();
+    }
+
+    if (this.match( TokenType.INT,TokenType.FLOAT,TokenType.STRING,TokenType.BOOL)) {
       return this.variableDeclaration(this.previous().lexeme);
     }
+
     return this.expressionStatement();
   }
 
@@ -310,6 +318,20 @@ export class Parser {
       column: this.previous().column
     } as LiteralExpression;
   }
+
+  private whileStatement(): Statement {
+  const condition = this.parseExpression();
+  const body = this.block();
+
+  return {
+    kind: "WhileStatement",
+    condition,
+    body,
+    line: condition.line,
+    column: condition.column
+  } as WhileStatement;
+}
+
 
   private match(...types: TokenType[]): boolean {
     for (const type of types) {
