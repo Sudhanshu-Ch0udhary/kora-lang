@@ -11,6 +11,9 @@ import { IfStatement,BlockStatement } from "../ast/statements";
 
 import { WhileStatement } from "../ast/statements";
 
+import { StopStatement } from "../ast/statements";
+
+
 
 
 export class Parser {
@@ -33,6 +36,10 @@ export class Parser {
   }
 
   private statement(): Statement {
+    if (this.match(TokenType.STOP)) {
+      return this.stopStatement();
+    }
+
     if (this.match(TokenType.IF)) {
       return this.ifStatement();
     }
@@ -41,12 +48,18 @@ export class Parser {
       return this.whileStatement();
     }
 
-    if (this.match( TokenType.INT,TokenType.FLOAT,TokenType.STRING,TokenType.BOOL)) {
+    if (this.match(
+      TokenType.INT,
+      TokenType.FLOAT,
+      TokenType.STRING,
+      TokenType.BOOL
+    )) {
       return this.variableDeclaration(this.previous().lexeme);
     }
 
     return this.expressionStatement();
   }
+
 
   private variableDeclaration(typeName: string): Statement {
     const nameToken = this.consume(TokenType.IDENTIFIER,"Expected variable name after type");
@@ -320,17 +333,27 @@ export class Parser {
   }
 
   private whileStatement(): Statement {
-  const condition = this.parseExpression();
-  const body = this.block();
+    const condition = this.parseExpression();
+    const body = this.block();
 
-  return {
-    kind: "WhileStatement",
-    condition,
-    body,
-    line: condition.line,
-    column: condition.column
-  } as WhileStatement;
-}
+    return {
+      kind: "WhileStatement",
+      condition,
+      body,
+      line: condition.line,
+      column: condition.column
+    } as WhileStatement;
+  }
+
+  private stopStatement(): Statement {
+    const token = this.previous();
+
+    return {
+      kind: "StopStatement",
+      line: token.line,
+      column: token.column
+    } as StopStatement;
+  }
 
 
   private match(...types: TokenType[]): boolean {
