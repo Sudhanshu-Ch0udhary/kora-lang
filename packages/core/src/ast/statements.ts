@@ -1,40 +1,40 @@
-import { Expression, Statement } from "./nodes";
+import { Expression, Statement, StatementBase } from "./nodes";
 
-export interface BlockStatement extends Statement {
+export interface BlockStatement extends StatementBase {
   kind: "BlockStatement";
   statements: Statement[];
 }
 
-export interface VariableDeclaration extends Statement {
+export interface VariableDeclaration extends StatementBase {
   kind: "VariableDeclaration";
   typeName: string;
   name: string;
   initializer: Expression;
 }
 
-export interface ExpressionStatement extends Statement {
+export interface ExpressionStatement extends StatementBase {
   kind: "ExpressionStatement";
   expression: Expression;
 }
 
-export interface IfStatement extends Statement {
+export interface IfStatement extends StatementBase {
   kind: "IfStatement";
   condition: Expression;
   thenBranch: BlockStatement;
   elseBranch?: BlockStatement;
 }
 
-export interface WhileStatement extends Statement {
+export interface WhileStatement extends StatementBase {
   kind: "WhileStatement";
   condition: Expression;
   body: BlockStatement;
 }
 
-export interface StopStatement extends Statement {
+export interface StopStatement extends StatementBase {
   kind: "StopStatement";
 }
 
-export interface FunctionDeclaration extends Statement {
+export interface FunctionDeclaration extends StatementBase {
   kind: "FunctionDeclaration";
   name: string;
   parameters: {
@@ -44,7 +44,7 @@ export interface FunctionDeclaration extends Statement {
   body: BlockStatement;
 }
 
-export interface ReturnStatement extends Statement {
+export interface ReturnStatement extends StatementBase {
   kind: "ReturnStatement";
   value?: Expression;
 }

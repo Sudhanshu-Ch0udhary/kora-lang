@@ -1,29 +1,29 @@
-import { Expression } from "./nodes";
+import { Expression, ExpressionBase } from "./nodes";
 
-export interface LiteralExpression extends Expression {
+export interface LiteralExpression extends ExpressionBase {
   kind: "LiteralExpression";
   value: number | string | boolean | null;
 }
 
-export interface IdentifierExpression extends Expression {
+export interface IdentifierExpression extends ExpressionBase {
   kind: "IdentifierExpression";
   name: string;
 }
 
-export interface BinaryExpression extends Expression {
+export interface BinaryExpression extends ExpressionBase {
   kind: "BinaryExpression";
   operator: string;
   left: Expression;
   right: Expression;
 }
 
-export interface UnaryExpression extends Expression {
+export interface UnaryExpression extends ExpressionBase {
   kind: "UnaryExpression";
   operator: string;
   operand: Expression;
 }
 
-export interface CallExpression extends Expression {
+export interface CallExpression extends ExpressionBase {
   kind: "CallExpression";
   callee: string;
   arguments: Expression[];
