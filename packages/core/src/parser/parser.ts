@@ -13,6 +13,7 @@ import { WhileStatement } from "../ast/statements";
 
 import { StopStatement } from "../ast/statements";
 
+import { FunctionDeclaration,ReturnStatement } from "../ast/statements";
 
 
 
@@ -36,6 +37,14 @@ export class Parser {
   }
 
   private statement(): Statement {
+    if (this.match(TokenType.FUNC)) {
+      return this.functionDeclaration();
+    }
+
+    if (this.match(TokenType.RETURN)) {
+      return this.returnStatement();
+    }
+
     if (this.match(TokenType.STOP)) {
       return this.stopStatement();
     }
@@ -355,6 +364,77 @@ export class Parser {
     } as StopStatement;
   }
 
+  private functionDeclaration(): Statement {
+    const nameToken = this.consume(
+      TokenType.IDENTIFIER,
+      "Expected function name after 'func'"
+    );
+
+    this.consume(TokenType.LEFT_PAREN, "Expected '(' after function name");
+
+    const parameters: { typeName: string; name: string }[] = [];
+
+    if (!this.check(TokenType.RIGHT_PAREN)) {
+      do {
+        if (!this.match(
+          TokenType.INT,
+          TokenType.FLOAT,
+          TokenType.STRING,
+          TokenType.BOOL
+        )) {
+          throw new ParseError(
+            "Expected parameter type",
+            this.peek()
+          );
+        }
+
+        const typeName = this.previous().lexeme;
+
+        const paramName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected parameter name"
+        );
+
+        parameters.push({
+          typeName,
+          name: paramName.lexeme
+        });
+
+      } while (this.match(TokenType.COMMA));
+    }
+
+    this.consume(TokenType.RIGHT_PAREN, "Expected ')' after parameters");
+
+    const body = this.block();
+
+    return {
+      kind: "FunctionDeclaration",
+      name: nameToken.lexeme,
+      parameters,
+      body,
+      line: nameToken.line,
+      column: nameToken.column
+    } as FunctionDeclaration;
+  }
+
+  private returnStatement(): Statement {
+    const keyword = this.previous();
+    let value;
+
+    if (
+      !this.check(TokenType.RIGHT_BRACE) &&
+      !this.check(TokenType.EOF)
+    ) {
+      value = this.parseExpression();
+    }
+
+    return {
+      kind: "ReturnStatement",
+      value,
+      line: keyword.line,
+      column: keyword.column
+    } as ReturnStatement;
+  }
 
   private match(...types: TokenType[]): boolean {
     for (const type of types) {
