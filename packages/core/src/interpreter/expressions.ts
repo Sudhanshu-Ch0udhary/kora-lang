@@ -9,6 +9,10 @@ import {
 } from "../ast/expressions";
 
 import { Environment } from "./environment";
+
+import { executeBlock } from "./statements";
+import { ReturnSignal } from "./control";
+
 import {
   RuntimeValue,
   INT,
@@ -203,13 +207,29 @@ function evaluateCall(
     throw new Error(`'${expr.callee}' is not a function`);
   }
 
-  if (expr.arguments.length !== callee.parameters.length) {
+  const args = expr.arguments.map(arg => evaluate(arg, env));
+  if (args.length !== callee.parameters.length) {
     throw new Error(
-      `Expected ${callee.parameters.length} arguments but got ${expr.arguments.length}`
+      `Expected ${callee.parameters.length} arguments but got ${args.length}`
     );
   }
 
-  // For now, returning NULL as a placeholder
+  const fnEnv = new Environment(callee.closure);
+
+  for (let i = 0; i < callee.parameters.length; i++) {
+    const param = callee.parameters[i];
+    fnEnv.define(param.name, args[i]);
+  }
+
+  try {
+    executeBlock(callee.body.statements, fnEnv);
+  } catch (signal) {
+    if (signal instanceof ReturnSignal) {
+      return signal.value;
+    }
+    throw signal;
+  }
+
   return NULL;
 }
 
