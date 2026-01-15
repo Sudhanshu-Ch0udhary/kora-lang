@@ -28,3 +28,9 @@ export interface CallExpression extends ExpressionBase {
   callee: string;
   arguments: Expression[];
 }
+
+export interface AssignmentExpression extends ExpressionBase {
+  kind: "AssignmentExpression";
+  name: string;
+  value: Expression;
+}

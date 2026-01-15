@@ -33,7 +33,7 @@ export class Parser {
     return statements;
   }
   private parseExpression(): Expression {
-    return this.logicalOr();
+    return this.assignment();
   }
 
   private statement(): Statement {
@@ -435,6 +435,31 @@ export class Parser {
       column: keyword.column
     } as ReturnStatement;
   }
+
+  private assignment(): Expression {
+    const expr = this.logicalOr();
+
+    if (this.match(TokenType.EQUAL)) {
+      const equals = this.previous();
+      const value = this.assignment();
+
+      if (expr.kind === "IdentifierExpression") {
+        return {
+          kind: "AssignmentExpression",
+          name: expr.name,
+          value,
+          line: equals.line,
+          column: equals.column,
+        };
+      }
+
+      throw new ParseError("Invalid assignment target", equals);
+    }
+
+  return expr;
+}
+
+
 
   private match(...types: TokenType[]): boolean {
     for (const type of types) {

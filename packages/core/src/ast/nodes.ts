@@ -4,6 +4,7 @@ export type NodeType =
   | "UnaryExpression"
   | "BinaryExpression"
   | "CallExpression"
+  | "AssignmentExpression"
   | "ExpressionStatement"
   | "VariableDeclaration"
   | "IfStatement"
@@ -14,7 +15,7 @@ export type NodeType =
   | "BlockStatement";
 
 export interface BaseNode {
-  type: NodeType;
+  kind: NodeType;
   line: number;
   column: number;
 }
@@ -28,7 +29,9 @@ export type Expression =
   | import("./expressions").IdentifierExpression
   | import("./expressions").UnaryExpression
   | import("./expressions").BinaryExpression
-  | import("./expressions").CallExpression;
+  | import("./expressions").CallExpression
+  | import("./expressions").AssignmentExpression
+
 
 export type Statement =
   | import("./statements").ExpressionStatement

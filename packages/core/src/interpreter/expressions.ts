@@ -5,6 +5,7 @@ import {
   UnaryExpression,
   BinaryExpression,
   CallExpression,
+  AssignmentExpression
 } from "../ast/expressions";
 
 import { Environment } from "./environment";
@@ -35,7 +36,10 @@ export function evaluate(expr: Expression, env: Environment): RuntimeValue {
     case "CallExpression":
       return evaluateCall(expr, env);
 
-    default:
+    case "AssignmentExpression":
+      return evaluateAssignment(expr as AssignmentExpression, env);
+    
+      default:
       throw new Error(`Unknown expression type: ${(expr as any).kind}`);
   }
 }
@@ -208,6 +212,16 @@ function evaluateCall(
   // For now, returning NULL as a placeholder
   return NULL;
 }
+
+function evaluateAssignment(
+  expr: AssignmentExpression,
+  env: Environment
+): RuntimeValue {
+  const value = evaluate(expr.value, env);
+  env.assign(expr.name, value);
+  return value;
+}
+
 
 function isTruthy(value: RuntimeValue): boolean {
   switch (value.type) {
