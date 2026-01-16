@@ -1,4 +1,11 @@
-export type RuntimeValue = | IntValue | FloatValue | StringValue | BoolValue | NullValue | FunctionValue;
+export type RuntimeValue = 
+| IntValue 
+| FloatValue 
+| StringValue 
+| BoolValue 
+| NullValue 
+| FunctionValue
+| NativeFunctionValue;
 
 export interface IntValue {
   type: "int";
@@ -34,6 +41,13 @@ export interface FunctionValue {
   body: any;
   closure: any; 
 }
+
+export interface NativeFunctionValue {
+  type: "native-function";
+  name: string;
+  call: (args: RuntimeValue[]) => RuntimeValue;
+}
+
 
 export const INT = (value: number): IntValue => ({
   type: "int",

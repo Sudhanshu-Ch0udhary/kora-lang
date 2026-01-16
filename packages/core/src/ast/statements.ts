@@ -1,4 +1,4 @@
-import { Expression, Statement, StatementBase } from "./nodes";
+import { Expression, Statement, StatementBase } from "./nodes.js";
 
 export interface BlockStatement extends StatementBase {
   kind: "BlockStatement";

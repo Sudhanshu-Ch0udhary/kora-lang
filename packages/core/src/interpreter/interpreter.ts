@@ -1,14 +1,19 @@
-import { Statement } from "../ast/nodes";
-import { Environment } from "./environment";
-import { execute } from "./statements";
-import { ReturnSignal, StopSignal } from "./control";
-import { RuntimeValue, NULL } from "./values";
+import { Statement } from "../ast/nodes.js";
+import { Environment } from "./environment.js";
+import { execute } from "./statements.js";
+import { ReturnSignal, StopSignal } from "./control.js";
+import { RuntimeValue, NULL } from "./values.js";
+import { createStdlib } from "../stdlib/index.js";
 
 export class Interpreter {
   private globalEnv: Environment;
 
   constructor() {
     this.globalEnv = new Environment();
+    const stdlib = createStdlib();
+    for (const name in stdlib) {
+      this.globalEnv.define(name, stdlib[name]);
+    }
   }
 
   run(program: Statement[]): RuntimeValue {

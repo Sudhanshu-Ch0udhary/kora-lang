@@ -1,4 +1,4 @@
-import { Expression } from "../ast/nodes"
+import { Expression } from "../ast/nodes.js"
 import {
   LiteralExpression,
   IdentifierExpression,
@@ -6,12 +6,12 @@ import {
   BinaryExpression,
   CallExpression,
   AssignmentExpression
-} from "../ast/expressions";
+} from "../ast/expressions.js";
 
-import { Environment } from "./environment";
+import { Environment } from "./environment.js";
 
-import { executeBlock } from "./statements";
-import { ReturnSignal } from "./control";
+import { executeBlock } from "./statements.js";
+import { ReturnSignal } from "./control.js";
 
 import {
   RuntimeValue,
@@ -21,7 +21,7 @@ import {
   BOOL,
   NULL,
   FunctionValue,
-} from "./values";
+} from "./values.js";
 
 export function evaluate(expr: Expression, env: Environment): RuntimeValue {
   switch (expr.kind) {
@@ -202,6 +202,11 @@ function evaluateCall(
   env: Environment
 ): RuntimeValue {
   const callee = env.lookup(expr.callee);
+
+  if(callee.type === "native-function"){
+    const args = expr.arguments.map(arg => evaluate(arg, env));
+    return callee.call(args);
+  }
 
   if (callee.type !== "function") {
     throw new Error(`'${expr.callee}' is not a function`);

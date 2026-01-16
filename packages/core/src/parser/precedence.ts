@@ -1,4 +1,4 @@
-import { TokenType } from "../lexer/token";
+import { TokenType } from "../lexer/token.js";
 
 export const PRECEDENCE: Partial<Record<TokenType, number>> = {
   [TokenType.OR]: 1,

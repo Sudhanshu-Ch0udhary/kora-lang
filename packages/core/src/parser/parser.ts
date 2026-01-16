@@ -1,19 +1,19 @@
-import { Token, TokenType } from "../lexer/token";
-import { ParseError } from "./parseError";
+import { Token, TokenType } from "../lexer/token.js";
+import { ParseError } from "./parseError.js";
 
-import { Expression } from "../ast/nodes";
-import { LiteralExpression,IdentifierExpression,BinaryExpression,UnaryExpression,CallExpression } from "../ast/expressions";
+import { Expression } from "../ast/nodes.js";
+import { LiteralExpression,IdentifierExpression,BinaryExpression,UnaryExpression,CallExpression } from "../ast/expressions.js";
 
-import { Statement } from "../ast/nodes";
-import { VariableDeclaration, ExpressionStatement } from "../ast/statements";
+import { Statement } from "../ast/nodes.js";
+import { VariableDeclaration, ExpressionStatement } from "../ast/statements.js";
 
-import { IfStatement,BlockStatement } from "../ast/statements";
+import { IfStatement,BlockStatement } from "../ast/statements.js";
 
-import { WhileStatement } from "../ast/statements";
+import { WhileStatement } from "../ast/statements.js";
 
-import { StopStatement } from "../ast/statements";
+import { StopStatement } from "../ast/statements.js";
 
-import { FunctionDeclaration,ReturnStatement } from "../ast/statements";
+import { FunctionDeclaration,ReturnStatement } from "../ast/statements.js";
 
 
 

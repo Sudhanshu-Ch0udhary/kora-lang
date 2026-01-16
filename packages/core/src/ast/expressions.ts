@@ -1,4 +1,4 @@
-import { Expression, ExpressionBase } from "./nodes";
+import { Expression, ExpressionBase } from "./nodes.js";
 
 export interface LiteralExpression extends ExpressionBase {
   kind: "LiteralExpression";

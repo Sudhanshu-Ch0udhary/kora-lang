@@ -1,5 +1,5 @@
 //The lexer uses this map to distinguish identifiers from keywords.
-import { TokenType } from "./token";
+import { TokenType } from "./token.js";
 
 export const KEYWORDS: Record<string, TokenType> = {
   int: TokenType.INT,

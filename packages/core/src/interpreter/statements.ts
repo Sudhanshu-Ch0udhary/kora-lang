@@ -1,4 +1,4 @@
-import { Statement } from "../ast/nodes";
+import { Statement } from "../ast/nodes.js";
 import {
   ExpressionStatement,
   VariableDeclaration,
@@ -7,12 +7,12 @@ import {
   StopStatement,
   ReturnStatement,
   FunctionDeclaration,
-} from "../ast/statements";
+} from "../ast/statements.js";
 
-import { Environment } from "./environment";
-import { evaluate } from "./expressions";
-import {RuntimeValue,NULL,FunctionValue} from "./values";
-import { ReturnSignal, StopSignal } from "./control";
+import { Environment } from "./environment.js";
+import { evaluate } from "./expressions.js";
+import {RuntimeValue,NULL,FunctionValue} from "./values.js";
+import { ReturnSignal, StopSignal } from "./control.js";
 
 export function execute(stmt: Statement, env: Environment): void {
   switch (stmt.kind) {

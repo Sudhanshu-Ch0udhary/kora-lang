@@ -1,4 +1,4 @@
-import { RuntimeValue } from "./values";
+import { RuntimeValue } from "./values.js";
 
 export class Environment {
   private values: Map<string, RuntimeValue>;
