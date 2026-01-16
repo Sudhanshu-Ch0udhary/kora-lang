@@ -1,0 +1,16 @@
+{
+  "name": "kora",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "kora": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --loader ts-node/esm src/index.ts"
+  },
+  "dependencies": {
+    "@kora-lang/core": "*"
+  }
+}
