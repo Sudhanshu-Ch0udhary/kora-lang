@@ -3,18 +3,28 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
+import readline from "readline";
 
 import { Lexer, Parser, Interpreter } from "@kora-lang/core";
 
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length < 2 || args[0] !== "run") {
-    printUsage();
-    process.exit(1);
+  if (args.length === 0) {
+    startRepl();
+    return;
   }
 
-  const filePath = path.resolve(process.cwd(), args[1]);
+  if (args[0] === "run" && args[1]) {
+    runFile(args[1]);
+    return;
+  }
+
+  printUsage();
+}
+
+function runFile(file: string) {
+  const filePath = path.resolve(process.cwd(), file);
 
   if (!fs.existsSync(filePath)) {
     console.error(`File not found: ${filePath}`);
@@ -33,10 +43,45 @@ function main() {
     const interpreter = new Interpreter();
     interpreter.run(program);
   } catch (err: any) {
-    console.error("Error:");
     console.error(err.message ?? err);
-    process.exit(1);
   }
+}
+
+
+function startRepl() {
+  console.log("Kora REPL v0.1");
+  console.log("Press Ctrl+C to exit\n");
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: "> ",
+  });
+
+  const interpreter = new Interpreter();
+
+  rl.prompt();
+
+  rl.on("line", (line) => {
+    try {
+      const lexer = new Lexer(line);
+      const tokens = lexer.scanTokens();
+
+      const parser = new Parser(tokens);
+      const program = parser.parse();
+
+      interpreter.run(program);
+    } catch (err: any) {
+      console.error(err.message ?? err);
+    }
+
+    rl.prompt();
+  });
+
+  rl.on("close", () => {
+    console.log("\nBye!");
+    process.exit(0);
+  });
 }
 
 function printUsage() {
@@ -45,6 +90,7 @@ Kora CLI
 
 Usage:
   kora run <file.kora>
+  kora        (start REPL)
 `);
 }
 
