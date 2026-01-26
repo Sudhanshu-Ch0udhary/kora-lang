@@ -1,48 +1,67 @@
-# kora
+# Kora
 
-kora is a small, deterministic scripting language designed for safe embedding within backend systems and controlled execution environments.
+Kora is a small interpreted programming language built in TypeScript, featuring a custom lexer, parser, tree-walk interpreter, REPL, and CLI.
 
-## Overview
+It is designed as an educational + experimental language project, focused on clarity of implementation and developer experience.
 
-The project explores how limited scripting capabilities can be introduced into server-side systems without sacrificing predictability, isolation, or control.
+---
 
-kora prioritizes determinism and restricted execution over expressiveness.
+## Features
 
-## Design Goals
+- Custom lexer and parser
+- Tree-walk interpreter
+- Variables, assignment, and expressions
+- Control flow (`if`, `while`, `stop`)
+- Functions with closures
+- Minimal standard library (`print`, `len`, `type`)
+- Interactive REPL
+- CLI runner
 
-- Deterministic execution
-- Predictable runtime behavior
-- Safe sandboxed execution
-- Minimal and explicit language surface
+---
 
-## Execution Model
+## Installation
 
-- Scripts run in a constrained runtime
-- No unrestricted system or network access
-- Clearly defined execution boundaries
-- Designed for embedding, not standalone use
-
-## Intended Use Cases
-
-- Backend rule engines
-- Controlled automation workflows
-- Embedded logic in orchestration systems
-- Safe user-defined behavior in server environments
-
-## Non-Goals
-
-- General-purpose scripting
-- High-performance computation
-- OS-level access
-
-## Example
-
-```kora
-let score = 42
-
-if score < 50 {
-  emit("needs_review")
-} else {
-  emit("approved")
-}
+```bash
+npm install -g kora
 ```
+
+## Usage
+
+### Run a file
+
+``` bash
+kora run examples/hello.kora
+```
+
+### Start the REPL
+```bash
+kora repl
+```
+
+---
+
+# Examples
+
+## See the /examples folder for small programs demonstrating:
+
+- variables and math
+
+- control flow
+
+- functions
+
+- Documentation
+
+## Detailed documentation lives in /docs:
+
+- Language overview
+
+- Architecture
+
+- Design manifesto
+
+## Start Here
+
+- docs/README.md
+
+---

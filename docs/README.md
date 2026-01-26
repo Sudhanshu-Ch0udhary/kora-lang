@@ -9,7 +9,7 @@ If you are new to the project, start with the overview and work your way down.
 
 ---
 
-## 📖 Getting Started
+## Getting Started
 
 - **[Overview](overview.md)**  
   High-level introduction to Kora: what it is, why it exists, and when to use it.
@@ -19,14 +19,14 @@ If you are new to the project, start with the overview and work your way down.
 
 ---
 
-## 🏗 Architecture & Design
+## Architecture & Design
 
 - **[Architecture](architecture.md)**  
   Explains the internal structure of the Kora implementation: lexer, parser, AST, and runtime pipeline.
 
 ---
 
-## 📝 Language Reference (Coming Soon)
+## Language Reference (Coming Soon)
 
 - `language.md`  
   Formal description of Kora’s syntax and semantics.
@@ -42,13 +42,6 @@ advanced readers.
 - `internals/parser.md`
 - `internals/ast.md`
 - `internals/interpreter.md`
-
----
-
-## 🛣 Roadmap
-
-- `roadmap.md`  
-  Planned features, milestones, and future direction.
 
 ---
 

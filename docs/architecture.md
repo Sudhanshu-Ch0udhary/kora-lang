@@ -67,21 +67,6 @@ The `core` package is designed to be used by:
 
 The lexer converts raw source code into a linear stream of tokens.
 
-
-The `core` package is designed to be used by:
-- a CLI
-- a web playground
-- a VS Code extension
-- embedded host applications
-
----
-
-## Lexer
-
-### Responsibility
-
-The lexer converts raw source code into a linear stream of tokens.
-
 string → Token[]
 
 
