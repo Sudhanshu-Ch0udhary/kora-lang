@@ -1,7 +1,6 @@
 {
-  "name": "kora",
+  "name": "kora-lang",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "bin": {
     "kora": "dist/index.js"
@@ -12,6 +11,6 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@kora-lang/core": "*"
+    "@sudhanshu_choudhary/core": "*"
   }
 }

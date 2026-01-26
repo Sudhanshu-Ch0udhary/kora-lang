@@ -1,6 +1,6 @@
 {
-  "name": "@kora-lang/core",
-  "version": "0.0.1",
+  "name": "@sudhanshu_choudhary/core",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
