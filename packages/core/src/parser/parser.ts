@@ -259,6 +259,12 @@ export class Parser {
         return this.finishCall(name);
       }
 
+      if (this.check(TokenType.STRING_LITERAL) || this.check(TokenType.INT_LITERAL) || this.check(TokenType.FLOAT_LITERAL)) {
+        throw new ParseError(
+        "Expected '(' after function name",
+        this.peek()
+      );
+  }
       return {
         kind: "IdentifierExpression",
         name,
