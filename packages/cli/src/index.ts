@@ -5,7 +5,7 @@ import path from "path";
 import process from "process";
 import readline from "readline";
 
-import { Lexer, Parser, Interpreter } from "@sudhanshu_choudhary/core";
+import { Lexer, Parser, Interpreter } from "@sudhanshu_choudhary/kora-core";
 
 function main() {
   const args = process.argv.slice(2);
